@@ -1,9 +1,296 @@
-extends partial/layout
-block content
-	.autopagerize_page_element: .content
-		- page.posts.each(function (item) {
-			include mixins
-			+make_post(item, false)
-		- })
-		include mixins
-		+make_pager(__('prev'), __('next'))
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="default">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-yiyayiya" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/05/05/yiyayiya/" class="article-date">
+  <time datetime="2018-05-05T09:25:59.000Z" itemprop="datePublished">2018-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/05/05/yiyayiya/">yiyayiya</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#下一代门口机软件系统设计</p>
+<p>##1.系统介绍</p>
+<ul>
+<li>产品名：QH305 人脸识别对讲单元门口机</li>
+<li><p>系统硬件拓扑：<br><img src="media/15050107243714/15093565600766.jpg" alt=""></p>
+</li>
+<li><p>系统软件包括：</p>
+<ol>
+<li>服务器：门禁服务器、云对讲服务器、数据中心服务器</li>
+<li>门口机：Android App、蓝牙模块</li>
+<li>家庭端：家庭主机、家庭分机、平板</li>
+<li>住户：千丁app</li>
+<li>物业：智能对讲物业机、云对讲物业机</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li>设计目的：<ol>
+<li>整合智能对讲、云对讲、蓝牙门禁现有功能</li>
+<li>使用新的硬件方案（暂定 A33），提升系统性能和系统稳定性</li>
+<li>改进硬件ID</li>
+</ol>
+</li>
+</ul>
+<h2 id="2-系统功能"><a href="#2-系统功能" class="headerlink" title="2. 系统功能"></a>2. 系统功能</h2><p><img src="media/15050107243714/15093569029913.jpg" alt=""></p>
+<p>##3. 重点功能实现逻辑</p>
+<h3 id="3-1-门口机配置"><a href="#3-1-门口机配置" class="headerlink" title="3.1 门口机配置"></a>3.1 门口机配置</h3><p>门口机需要集成智能对讲、云对讲、蓝牙门禁，因此配置时需要整合智能对讲、云对讲、蓝牙门禁的配置。</p>
+<ol>
+<li>智能对讲所需配置信息：期、栋、单元、层、设备号，使用设备UUID 唯一标志一个设备。格式为： 20-1-39-1-1-0-1 （设备类型-期-栋-单元-1层）。</li>
+<li>云对讲所需配置信息，在智能对讲配置信息上面再增加小区id，配置信息提交到云对讲服务器。</li>
+<li>蓝牙门禁的配置信息：小区、期、栋、单元，配置信息提交到门禁业务服务器。</li>
+</ol>
+<p>整合后的配置方式为：使用门禁配置工具进行配置，门禁的配置信息仍然提交门禁业务服务器，云对讲和智能对讲则从门禁配置信息中提取自己所需配置（楼层没有则默认置为1，设备号则从1-100 中随机生成？），并提交到云对讲服务器。</p>
+<p><img src="media/15050107243714/15095014435142.jpg" alt=""></p>
+<h3 id="3-2-1-蓝牙开门"><a href="#3-2-1-蓝牙开门" class="headerlink" title="3.2.1 蓝牙开门"></a>3.2.1 蓝牙开门</h3><ol>
+<li>门口机配置：门口机提交配置信息到门禁服务器，配置信息格式和门禁配置一样</li>
+<li><p>app 开门：</p>
+<ol>
+<li>app 从门禁服务器获取可以开门的设备列表（包含门口机）</li>
+<li>app 向门口机蓝牙模块，发送开门指令</li>
+<li>门口机蓝牙模块收到开门指令后，通知门口机开门</li>
+</ol>
+<p><img src="media/15050107243714/15094166403171.jpg" alt=""></p>
+</li>
+</ol>
+<h3 id="3-2-2-刷卡开门"><a href="#3-2-2-刷卡开门" class="headerlink" title="3.2.2 刷卡开门"></a>3.2.2 刷卡开门</h3><ol>
+<li>发卡：通过服务器发卡页面，根据用户所在小区、组团、楼栋、单元、房间生成单元id，将单元id 写到卡上。（web 端的发卡是通过千丁读卡器程序进行读写卡的）</li>
+<li>刷卡：用户刷卡时，门口机的刷卡模块，读取卡片中的卡号、单元id、有限期等数据，如果卡在有效期内，并且卡上的单元id和单元门口机的单元id一致，则允许开门。刷卡时的判断逻辑需要在门口机的 android app 上面实现。</li>
+</ol>
+<p><img src="media/15050107243714/15094200199018.jpg" alt=""></p>
+<h3 id="3-2-3-密码开门"><a href="#3-2-3-密码开门" class="headerlink" title="3.2.3 密码开门"></a>3.2.3 密码开门</h3><p> 密码由老宋写的一个算法生成，大致生成方法如下：</p>
+<blockquote>
+<ol>
+<li>为每一个小区生成一个密码池，这个密码池的大小是6万左右（密码的长度是6位，在去掉一些常用密码）。每天生成的密码池都不一样。</li>
+<li>再根据这个小区有多少个单元，将密码平均分配到每个单元，假设一个小区有100 个单元，那么每个单元的密码池大小是 6万/100= 600。 </li>
+<li>用户在单元门口机上输入的密码，只要在单元门口机该单元的密码池内，就允许开门。</li>
+</ol>
+</blockquote>
+<p><em>密码生成的算法完全延用之前门禁的算法，对此无需展开讨论</em>。</p>
+<p>密码开门业务流程：</p>
+<ol>
+<li>用户在千丁app 上面点击访客通行时，会从门禁业务服务器获取一个访客密码。</li>
+<li>门口机上面，也会集成老宋的门禁生成算法，每天根据自己的单元id、时间等信息生成相应的密码池。用户输入密码时，将用户输入的密码传给老宋的密码生成库进行验证即可。</li>
+</ol>
+<h3 id="3-2-4-访客密码开门"><a href="#3-2-4-访客密码开门" class="headerlink" title="3.2.4 访客密码开门"></a>3.2.4 访客密码开门</h3><h3 id="3-3-1-云对讲呼叫住户"><a href="#3-3-1-云对讲呼叫住户" class="headerlink" title="3.3.1 云对讲呼叫住户"></a>3.3.1 云对讲呼叫住户</h3><ol>
+<li>用户在门口机上面输入房间号</li>
+<li>门口机从服务器获取该房间可以呼叫的住户列表</li>
+<li>门口机对住户列表进行轮呼</li>
+</ol>
+<h3 id="3-3-2-呼叫物业"><a href="#3-3-2-呼叫物业" class="headerlink" title="3.3.2 呼叫物业"></a>3.3.2 呼叫物业</h3><h3 id="3-4-1-呼叫家庭主机"><a href="#3-4-1-呼叫家庭主机" class="headerlink" title="3.4.1 呼叫家庭主机"></a>3.4.1 呼叫家庭主机</h3><p><img src="media/15227382377584/15228098349354.jpg" alt=""></p>
+<p><img src="media/15227382377584/15228120725062.jpg" alt=""></p>
+<p><img src="media/15227382377584/15228121057515.jpg" alt=""></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/05/05/yiyayiya/" data-id="cjgt8paxs0001hc7hztd5r63c" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/05/05/hello-world/" class="article-date">
+  <time datetime="2018-05-05T09:24:27.000Z" itemprop="datePublished">2018-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/05/05/hello-world/">Hello World</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/05/05/hello-world/" data-id="cjgt8paxo0000hc7hmlfeiibx" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/05/05/yiyayiya/">yiyayiya</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/05/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
